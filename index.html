@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vedio视频播放</title>
+                  </head>
+                    <style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    /*html,body需要同时设置为100% 100%，才能有高度*/
+    html, body {
+        height: 100%;
+    }
+    .wrapper {
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+    .vedio {
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        box-sizing: border-box;
+        padding: 20px;
+        border: 1px solid #000;
+    }
+    .preShow .play {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        overflow: hidden;
+        background:url("images/play.png") 100% 100% no-repeat;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .preShow .play:hover{
+        background-color:rgba(0,0,0,0.1);
+    }
+
+</style>
+<body>
+<div class="wrapper">
+    <div class="vedio">
+        <!-- 预播放时的图片-->
+        <div class="preShow" id="preShow">
+            <div class="play" id="play"></div>
+        </div>
+        <!--视频-->
+        <video src="video/videoSurveillance.mp4" controls="controls" id="video" style="display: none">
+            您的浏览器不支持 video 标签。
+        </video>
+    </div>
+</div>
+
+<script>
+    var video, preShow;
+    preShow = document.getElementById("preShow");
+    video = document.getElementById("video");
+    var playBtn = document.getElementById("play");
+
+    // ****************获取首帧作为视频的默认页面***********************
+    var initialize = function () {
+        video.addEventListener('loadeddata', captureImage);
+    };
+    var captureImage = function () {
+        console.log(video.videoWidth);
+        console.log(video.videoHeight);
+        var canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        var img = document.createElement("img");
+        img.src = canvas.toDataURL("image/png");
+        preShow.appendChild(img);
+    };
+    initialize();
+
+    // ***********************点击播放按钮***********************
+    playBtn.addEventListener('click',function(){
+        video.play();
+    });
+
+    // ***********************监听video的状态***********************
+    video.addEventListener('pause',function(){
+        video.style.display="none";
+        preShow.style.display="block";
+    });
+    video.addEventListener('play',function(){
+        video.style.display="block";
+        preShow.style.display="none";
+    });
+
+</script>
+
+
+</body>
+</html>
